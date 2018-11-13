@@ -1,32 +1,36 @@
+var fs = require('fs');
 var express = require('express');
 var app = express();
 
-var fs = require('fs');
-
-app.post('/', function(req, res) {
+app.get('/todos', function(req, res) {
+    fs.readFile('./tareas.json', function(e, data){
+        res.send(JSON.parse(data));
+    })
+})
+app.get('/todos/:todoId', function(req, res) {
+    fs.readFile('./tareas.json', function(e, data){
+        var tasks = JSON.parse(data);
+        res.send(tasks[req.params.todoId]);
+    })
+})
+app.put('/todos/:todoId', function(req, res) {
     res.send({
-        task: 'guardado',
+        hola: 'mundo',
     })
-});
-
-app.get('/', function(req, res) {
-    res.send( {
-        task: 'leido',
+})
+app.post('/todos', function(req, res) {
+    fs.readFile('./tareas.json', function(e, data){
+        var tasks = JSON.parse(data);
+        tasks['3'] = {"titulo": "Hacer andar esta cosa", "done": false};
+        fs.writeFile('./tareas.json', JSON.stringify(tasks));
+    })
+})
+app.delete('/todos/:todoId', function(req, res) {
+    res.send({
+        hola: 'mundo',
     })
 })
 
-app.delete('/', function(req, res) {
-    res.send( {
-        task: 'eliminado',
-    })
+app.listen('8080', function(){
+    console.log("Escuchando el puerto 8080")
 })
-
-app.put('/', function(req, res) {
-    res.send( {
-        task: 'modificado',
-    })
-})
-
-app.listen(8080, function() {
-    console.log(`Server escuchando en puerto 8080!`);
-});
