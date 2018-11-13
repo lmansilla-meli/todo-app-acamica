@@ -1,10 +1,1 @@
-{
-    "1": {
-        "titulo": "Llamar a Roberto",
-        "done": true
-    },
-    "2": {
-        "titulo": "Comprar Helado",
-        "done": false
-    }
-}
+{"1":{"titulo":"Llamar a Roberto","done":true},"2":{"titulo":"Comprar Helado","done":false}}
