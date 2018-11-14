@@ -28,13 +28,17 @@ app.post('/todos/:todoId', function(req, res) {
 });
 
 app.delete('/todos/:todoId', function(req, res) {
-    fs.readFile('./tareas.json', function(e, data){
-        var tasks = JSON.parse(data);
-        delete tasks[req.params.todoId]
-        fs.writeFile('./tareas.json', JSON.stringify(tasks), function(e) {
-            res.send(req.params.todoId + ' borrado correctamente');
+    if(req.query.user === 'admin' && req.query.pass === 'admin') {
+        fs.readFile('./tareas.json', function(e, data){
+            var tasks = JSON.parse(data);
+            delete tasks[req.params.todoId]
+            fs.writeFile('./tareas.json', JSON.stringify(tasks), function(e) {
+                res.send(req.params.todoId + ' borrado correctamente');
+            });
         });
-    });
+    } else {
+        res.send('No tiene permiso de admin.');
+    };  
 });
 
 app.listen('8080', function(){
