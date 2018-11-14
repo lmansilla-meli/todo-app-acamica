@@ -4,13 +4,42 @@ var express = require('express');
 var app = express();
 app.use(bodyParser());
 
-app.get('/todos', function(req, res) {
+
+var permisos = {
+    'admin': ['*'],
+    'user': ['POST', 'GET'],
+}
+var checkearPermisosUser = function(req, res, next) {
+    if (req.query.user === 'user' && req.query.pass === 'user') {
+        next();
+    } else {
+        res.status(401).send('Sin permisos GATOOOOO 🐈');
+    }
+}
+
+var checkearPermisosAdmin = function(req, res, next) {
+    if (req.query.user === 'admin' && req.query.pass === 'admin') {
+        next();
+    } else {
+        res.status(401).send('Sin permisos GATOOOOO 🐈');
+    }
+}
+
+
+var logger = function(req, res, next) {
+    console.log(req);
+    next();
+}
+
+var obtenerTareas = function(req, res) {
     fs.readFile('./tareas.json', function(e, data){
         res.send(JSON.parse(data));
     });
-});
+}
 
-app.get('/todos/:todoId', function(req, res) {
+app.get('/todos', checkearPermisosUser, logger, obtenerTareas);
+
+app.get('/todos/:todoId', checkearPermisosUser, function(req, res) {
     fs.readFile('./tareas.json', function(e, data){
         var tasks = JSON.parse(data);
         res.send(tasks[req.params.todoId]);
@@ -27,7 +56,7 @@ app.post('/todos/:todoId', function(req, res) {
     });
 });
 
-app.delete('/todos/:todoId', function(req, res) {
+app.delete('/todos/:todoId',checkearPermisosAdmin, function(req, res) {
     fs.readFile('./tareas.json', function(e, data){
         var tasks = JSON.parse(data);
         delete tasks[req.params.todoId]
